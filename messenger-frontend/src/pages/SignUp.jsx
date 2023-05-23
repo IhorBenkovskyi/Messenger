@@ -2,7 +2,8 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link } from 'react-router-dom';
+import { useSignupUserMutation } from '../services/appApi';
+import { Link, useNavigate } from 'react-router-dom';
 import './SignUp.css';
 import profileImg from '../images/profileImg.png';
 import { useState } from 'react';
@@ -11,6 +12,9 @@ const SingUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
+    const navigate = useNavigate();
+    const [signupUser, { isLoading, isError, error }] = useSignupUserMutation();
+
     const [image, setImage] = useState(null);
     const [uploadingProfileImg, setUploadingProfileImg] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
@@ -18,7 +22,7 @@ const SingUp = () => {
 
     const vallidateImage = (e) => {
         const file = e.target.files[0];
-        if (file.size > 1024 * 1024) {
+        if (file.size > 1048576) {
             return alert('File size is too big!');
         } else {
             setImage(file);
@@ -50,6 +54,12 @@ const SingUp = () => {
         if (!image) alert('Please add  your image');
         const url = await uploadImage(image);
         console.log(url);
+        signupUser({ email, password, name, picture: url }).then((data) => {
+            if (data) {
+                console.log(data);
+                navigate('/chat');
+            }
+        });
     }
     return (
         <Container>
