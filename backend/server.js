@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 //app.use('/users', userRoutes)
-//require('./connection')
+require('./connection')
 
 const server = require('http').createServer(app);
 const PORT = 5001;
